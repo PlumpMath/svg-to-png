@@ -34,7 +34,14 @@ app.controller('mainCtrl', ["$scope", function($scope) {
   var svg = d3.select('span').append("svg")
     .attr("width", "100%")
     .attr("height", height + 100)
-    .attr("style", "background: #f4f4f4");
+    .attr("style", "background: #f4f4f4")
+
+
+
+  d3.select("svg").append("defs").append("style")
+    .attr('type', "text/css")
+    .text("@import url('http://fonts.googleapis.com/css?family=Spicy+Rice'); text { font: 28px 'Spicy Rice'; }")
+
 
   // Declare margin object (adds buffer)
   var margin = {left:80,right:50,top:40,bottom:0};
@@ -70,6 +77,15 @@ app.controller('mainCtrl', ["$scope", function($scope) {
       .attr("cx",function(d,i){ return x(d.key); })
       .attr("cy",function(d,i){ return y(d.values); })
       .attr("r","2.5")
+
+
+
+
+
+
+
+
+
 
 
 
@@ -137,7 +153,7 @@ app.controller('mainCtrl', ["$scope", function($scope) {
 
         var cssRules = s.cssRules;
         for (var r = 0; r < cssRules.length; r++) {
-          if ( contains( cssRules[r].selectorText, selectorTextArr ) )
+          if ( contains( cssRules[r].selectorText, selectorTextArr ) || i===2 )
             extractedCSSText += cssRules[r].cssText;
         }
       }
@@ -162,11 +178,11 @@ app.controller('mainCtrl', ["$scope", function($scope) {
 
   function svgString2Image( svgString, width, height, format, callback ) {
     var format = format ? format : 'png';
-
     var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to dataurl
 
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
+
 
     canvas.width = width;
     canvas.height = height;
@@ -184,6 +200,8 @@ app.controller('mainCtrl', ["$scope", function($scope) {
     };
 
     image.src = imgsrc;
+
+    console.log (image)
   }
 
 
