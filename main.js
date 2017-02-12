@@ -201,7 +201,6 @@ app.controller('mainCtrl', ["$scope", function($scope) {
 
     image.src = imgsrc;
 
-    console.log (image)
   }
 
 
