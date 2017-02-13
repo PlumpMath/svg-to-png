@@ -37,8 +37,7 @@ app.controller('mainCtrl', ["$scope", function($scope) {
     .attr("style", "background: #f4f4f4")
 
 
-
-  d3.select("svg").append("defs").append("style")
+  svg.append("defs").append("style")
     .attr('type', "text/css")
     .text("@import url('http://fonts.googleapis.com/css?family=Spicy+Rice'); text { font: 28px 'Spicy Rice'; }")
 
@@ -91,7 +90,7 @@ app.controller('mainCtrl', ["$scope", function($scope) {
 
   $scope.saveSvgToPng = function () {
     var svgString = getSVGString(svg.node());
-    svgString2Image(svgString, 2*width, 2*height, 'png', save ); // passes Blob and filesize String to the callback
+    svgString2Image(svgString, 2*width, 2*height, save ); // passes Blob and filesize String to the callback
 
     function save (dataBlob, filesize) {
       saveAs(dataBlob,'D3 exported as PNG.png'); // FileSaver.js function
@@ -102,17 +101,21 @@ app.controller('mainCtrl', ["$scope", function($scope) {
   // getSVGString (svgNode ) and svgString2Image( svgString, width, height, format, callback )
   function getSVGString( svgNode ) {
     svgNode.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
-    var cssStyleText = getCSSStyles( svgNode );
-    appendCSS (cssStyleText, svgNode)
+    // var cssStyleText = getCSSStyles( svgNode );
+    // appendCSS (cssStyleText, svgNode)
 
     var serializer = new XMLSerializer();
     var svgString = serializer.serializeToString(svgNode);
+
+    // ==========================DO I NEED THIS?
     svgString = svgString.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink=') // Fix root xlink without namespace
     svgString = svgString.replace(/NS\d+:href/g, 'xlink:href') // Safari NS namespace fix
 
+
+
     return svgString;
 
-    function getCSSStyles( parentElement ) {
+    /* function getCSSStyles( parentElement ) {
       var selectorTextArr = [];
 
       // Add Parent element Id and Classes to the list
@@ -157,27 +160,27 @@ app.controller('mainCtrl', ["$scope", function($scope) {
             extractedCSSText += cssRules[r].cssText;
         }
       }
-
+      console.log (extractedCSSText)
       return extractedCSSText
 
       function contains(str,arr) {
         return arr.indexOf( str ) === -1 ? false : true;
       }
 
-    }
-
-    function appendCSS( cssText, element ) {
-      var styleElement = document.createElement("style");
-      styleElement.setAttribute("type","text/css");
-      styleElement.innerHTML = cssText;
-      var refNode = element.hasChildNodes() ? element.children[0] : null;
-      element.insertBefore( styleElement, refNode );
-    }
-
+    }*/
   }
 
-  function svgString2Image( svgString, width, height, format, callback ) {
-    var format = format ? format : 'png';
+
+  /*  function appendCSS( cssText, element ) {
+    var styleElement = document.createElement("style");
+    styleElement.setAttribute("type","text/css");
+    styleElement.innerHTML = cssText;
+    var refNode = element.hasChildNodes() ? element.children[0] : null;
+    element.insertBefore( styleElement, refNode );
+  }*/
+
+  function svgString2Image( svgString, width, height, callback ) {
+    // var format = format ? format : 'png';
     var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to dataurl
 
     var canvas = document.createElement("canvas");
@@ -192,8 +195,20 @@ app.controller('mainCtrl', ["$scope", function($scope) {
       context.clearRect ( 0, 0, width, height );
       context.drawImage(image, 0, 0, width, height);
 
+
+
+      console.log (context)
+
+
+
       canvas.toBlob( function(blob) {
+
         var filesize = Math.round( blob.length/1024 ) + ' KB';
+
+
+        // var gh = canvas.toDataURL('png');
+
+
         if ( callback ) callback( blob, filesize );
       });
 
